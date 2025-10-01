@@ -59,10 +59,10 @@
             <p>이 앱은 사용자의 현재 위치 정보를 사용합니다.</p>
         </footer>
     </div>
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkuHO-SVybFTseQ9e5RNk6ROx6kCQZjvQ&callback=initMap" async defer></script>
     
     <script>
+        // --- 데이터 입력 부분 ---
+        // JSON 데이터 형식 오류를 모두 수정했습니다.
         const facilities = [
 {"type":"장애인거주시설","district":"종로구","name":"문혜장애인요양원","address":"강원도 철원군 갈말읍 텃골1길 13","latitude":38.1906444,"longitude":127.3691129},
 {"type":"장애인거주시설","district":"종로구","name":"은혜장애인요양원","address":"강원도 철원군 갈말읍 텃골1길 19","latitude":38.1913209,"longitude":127.368051},
@@ -2016,6 +2016,7 @@
 {"type":"정신재활시설","district":"강동구","name":"이음","address":"강동구 천호옛12길 24-15","latitude":37.5341486,"longitude":127.1261339},
 {"type":"정신재활시설","district":"강동구","name":"행복정신건강센터","address":"강동구 진황도로 119 4층","latitude":37.5349501,"longitude":127.1395654}
         ];
+        // --- 데이터 입력 끝 ---
 
         const findBtn = document.getElementById('findBtn');
         const messageDiv = document.getElementById('message');
@@ -2023,9 +2024,11 @@
         const mapContainer = document.getElementById('map');
 
         let map = null;
-        const markers = [];
+        let userMarker = null;
+        const facilityMarkers = [];
         let activeInfoWindow = null;
 
+        // initMap 함수는 Google Maps API가 로드되면 자동으로 호출됩니다.
         function initMap() {
             findBtn.disabled = false;
             findBtn.querySelector('span').textContent = '내 위치에서 가장 가까운 시설 찾기';
@@ -2055,7 +2058,7 @@
                 zoomControl: true,
             });
 
-            new google.maps.Marker({ 
+            userMarker = new google.maps.Marker({ 
                 position: userPosition, 
                 map: map, 
                 title: '내 위치',
@@ -2100,8 +2103,8 @@
             }
             messageDiv.textContent = `가장 가까운 ${sortedFacilities.length}개의 시설입니다.`;
             
-            markers.forEach(marker => marker.setMap(null));
-            markers.length = 0;
+            facilityMarkers.forEach(marker => marker.setMap(null));
+            facilityMarkers.length = 0;
 
             sortedFacilities.forEach(facility => {
                 resultsDiv.insertAdjacentHTML('beforeend', createResultCard(facility));
@@ -2113,7 +2116,7 @@
                     title: facility.name,
                     icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                 });
-                markers.push(marker);
+                facilityMarkers.push(marker);
 
                 const infowindow = new google.maps.InfoWindow({
                     content: `<div style="font-weight:bold;">${facility.name}</div>`
@@ -2161,9 +2164,9 @@
             return deg * (Math.PI / 180);
         }
     </script>
+    
+    <!-- Google Maps API 스크립트는 반드시 </body> 태그 직전에 위치해야 합니다. -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkuHO-SVybFTseQ9e5RNk6ROx6kCQZjvQ&callback=initMap" async defer></script>
 </body>
 </html>
-
-
-
 
